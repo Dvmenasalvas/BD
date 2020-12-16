@@ -1,0 +1,66 @@
+c:\hlocal>exp USERid=CC08/CC08PWD@BDd owner=(CC08) file=ex.txt
+
+Export: Release 11.2.0.1.0 - Production on Lun Oct 29 20:10:54 2018
+
+Copyright (c) 1982, 2009, Oracle and/or its affiliates.  All rights reserved.
+
+
+Conectado a: Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+Exportaci¾n realizada en el juego de caracteres WE8MSWIN1252 y el juego de caracteres NCHAR AL16UTF16
+. exportando acciones y objetos de procedimiento pre-esquema
+. exportando nombres de biblioteca de funciones ajenas para el usuario CC08
+. exportando sin¾nimos de tipo p·blico
+. exportando sin¾nimos de tipo privado
+. exportando definiciones de tipos de objetos para el usuario CC08
+Exportando los objetos de CC08  ...
+. exportando enlaces a la base de datos
+. exportando n·meros de secuencia
+. exportando definiciones de cluster
+. exportando las tablas de CC08 a travÚs de la Ruta de Acceso Convencional ...
+. exportando la tabla               C¾digos postales          6 filas exportadas
+. exportando la tabla                     DOMICILIOS          5 filas exportadas
+. exportando la tabla                      EMPLEADOS          4 filas exportadas
+. exportando la tabla                      TEL+FONOS          5 filas exportadas
+. exportando sin¾nimos
+. exportando vistas
+. exportando procedimientos almacenados
+. exportando operadores
+. exportando restricciones de integridad referencial
+. exportando disparadores
+. exportando tipos de Ýndice
+. exportando Ýndices bitmap, funcionales y extensibles
+. exportando acciones de posttables
+. exportando vistas materializadas
+. exportando logs de instantßneas
+. exportando colas de trabajo
+. exportando grupos de refrescamiento y secundarios
+. exportando dimensiones
+. exportando acciones y objetos de procedimiento post-esquema
+. exportando estadÝsticas
+La exportaci¾n ha terminado correctamente y sin advertencias.
+
+
+
+
+
+
+
+
+IMP USERID=CC08/CC08PWD@BDd TOUSER=(CC08) FILE=exportacion.txt
+
+Import: Release 11.2.0.1.0 - Production on Lun Oct 29 20:20:18 2018
+
+Copyright (c) 1982, 2009, Oracle and/or its affiliates.  All rights reserved.
+
+
+Conectado a: Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+Archivo de exportaci¾n creado por EXPORT:V11.02.00 a travÚs de la ruta de acceso convencional
+importaci¾n realizada en el juego de caracteres WE8MSWIN1252 y el juego de caracteres NCHAR AL16UTF16
+. importando la tabla             "C¾digos postales"          6 filas importadas
+. importando la tabla                   "DOMICILIOS"          5 filas importadas
+. importando la tabla                    "EMPLEADOS"          4 filas importadas
+. importando la tabla                    "TEL+FONOS"          5 filas importadas
+La importaci¾n ha terminado correctamente y sin advertencias.

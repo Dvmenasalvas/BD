@@ -1,0 +1,4 @@
+sqlldr userid=CC08@BDd/CC08PWD control='Empleados.ctl' log='Empleados informeCorregido.txt'
+sqlldr userid=CC08@BDd/CC08PWD control='Códigos postales.ctl' log='Códigos postales informeCorregido.txt'
+sqlldr userid=CC08@BDd/CC08PWD control='Domicilios.ctl' log='Domicilios informeCorregido.txt'
+sqlldr userid=CC08@BDd/CC08PWD control='Teléfonos.ctl' log='Teléfonos informeCorregido.txt'

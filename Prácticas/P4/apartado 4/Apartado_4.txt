@@ -1,0 +1,19 @@
+	Fallo en Teléfonos:
+
+12345789P;913333333;
+
+El dni está mal puesto, el correcto sería 12345678P
+
+
+	Fallo en Códigos postales:
+
+28040;Madrid;Madrid;
+
+El elemento esta repetido, da un error por la primary key, que tiene que ser única.
+
+
+	Fallo en Domicilios:
+
+12345678L;Diamante;15200;
+
+El código postal 15200 no existe en Códigos postales, se cambiará por 14200

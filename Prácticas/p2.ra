@@ -1,0 +1,98 @@
+-- Para procesar este archivo (se puede especificar también la ruta): /process datos.ra
+-- Antes debéis crear las relaciones (tablas).
+-- Falta la última tupla de cada tabla y debéis escribir vosotros la instrucción de inserción en cada caso
+
+/abolish
+
+create or replace table programadores(dni string primary key, nombre string, dirección string, teléfono string);
+
+insert into programadores(dni, nombre, dirección, teléfono) values('1','Jacinto','Jazmín 4','91-8888888');
+insert into programadores(dni, nombre, dirección, teléfono) values('2','Herminia','Rosa 4','91-7777777');
+insert into programadores(dni, nombre, dirección, teléfono) values('3','Calixto','Clavel 3','91-1231231');
+insert into programadores(dni, nombre, dirección, teléfono) values('4','Teodora','Petunia 3','91-6666666');
+
+create or replace table analistas(dni string primary key, nombre string, dirección string, teléfono string);
+
+insert into analistas(dni, nombre, dirección, teléfono) values('4','Teodora','Petunia 3','91-6666666');
+insert into analistas(dni, nombre, dirección, teléfono) values('5','Evaristo','Luna 1','91-1111111');
+insert into analistas(dni, nombre, dirección, teléfono) values('6','Luciana','Júpiter 2','91-8888888');
+insert into analistas(dni, nombre, dirección, teléfono) values('7','Nicodemo','Plutón 3',NULL);
+
+-- Para crear una clave primaria de más de un atributo hay que añadir al final como si fuese otro campo lo siguiente: primary key (códigopr, dniemp)
+
+create or replace table distribución(códigopr string, dniemp string, horas int, primary key(códigopr, dniemp));
+
+insert into distribución(códigopr, dniemp, horas) values('P1','1',10);
+insert into distribución(códigopr, dniemp, horas) values('P1','2',40);
+insert into distribución(códigopr, dniemp, horas) values('P1','4',5);
+insert into distribución(códigopr, dniemp, horas) values('P2','4',10);
+insert into distribución(códigopr, dniemp, horas) values('P3','1',10);
+insert into distribución(códigopr, dniemp, horas) values('P3','3',40);
+insert into distribución(códigopr, dniemp, horas) values('P3','4',5);
+insert into distribución(códigopr, dniemp, horas) values('P3','5',30);
+insert into distribución(códigopr, dniemp, horas) values('P4','4',20);
+insert into distribución(códigopr, dniemp, horas) values('P4','5',10);
+
+create or replace table proyectos(código string primary key, descripción string, dnidir string);
+
+insert into proyectos(código, descripción, dnidir) values('P1','Nómina','4');
+insert into proyectos(código, descripción, dnidir) values('P2','Contabilidad','4');
+insert into proyectos(código, descripción, dnidir) values('P3','Producción','5');
+insert into proyectos(código, descripción, dnidir) values('P4','Clientes','5');
+insert into proyectos(código, descripción, dnidir) values('P5','Ventas','6');
+
+
+--Ejercicio 1
+vista1 := project dni(programadores njoin analistas)
+
+--Ejercicio 2
+--No se hacer lo del 0
+empleados := programadores union analistas
+empPr := empleados zjoin dni = dniemp distribución
+vista2 := group_by dni dni, sum(horas) true (empPr)
+
+--Ejercicio 3
+vista3 := project dni, nombre, códigopr(empPr)
+
+--Ejercicio 4
+vista4 := project dni, nombre(select teléfono is null (empleados))
+
+--Ejercicio 5
+avgEmp := group_by dni dni, avg(horas) true (empPr)
+avgHoras := group_by códigopr códigopr, avg(horas) true (distribución)
+avgProy := group_by [] avg($a4) true (avgHoras)
+fin := rename fin(dni, número, media) (avgEmp product avgProy)
+vista5 := project dni, número(select número < media(fin))
+
+--Ejercicio 6
+
+
+--Ejercicio 7
+pEvaristo := project códigopr(select dniemp = '5' (distribución))
+proyectosEmp := project dni, códigopr(empleados zjoin dniemp = dni distribución)
+vista7 := select dni != '5'(project dni(proyectosEmp division pEvaristo))
+
+--Ejercicio 8
+nEvaristo := group_by [] count(códigopr) true(pEvaristo)
+conEvaristo := pEvaristo njoin proyectosEmp
+nEmpleados := group_by dni dni, count(códigopr) true(conEvaristo)
+aux := select $a3 = $a1(nEmpleados product nEvaristo)
+vista8 := project dni(select dni != '5'(aux))
+
+select true(vista8)
+
+--Ejercicio 9
+dirigidoPorEvaristo := project código (select dnidir = '5' (proyectos))
+evaristo_empleado :=  project código, dniemp (select código = códigopr, dniemp != '5'(dirigidoPorEvaristo product distribución))
+
+select true(vista1)
+select true(vista2)
+select true(vista3)
+select true(vista4)
+select true(vista5)
+select true(vista6)
+select true(vista7)
+select true(vista8)
+
+
+

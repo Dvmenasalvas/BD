@@ -1,0 +1,120 @@
+-- Pablo Sanz Caperote y Juan Carlos Villanueva Quiros
+
+/abolish
+
+create or replace table programadores(dni string primary key, nombre string, dirección string, teléfono string);
+
+create or replace table analistas(dni string primary key, nombre string, dirección string, teléfono string);
+
+create or replace table distribución(códigopr string, dniemp string, horas int, primary key (códigopr, dniemp));
+
+create or replace table proyectos(código string primary key, descripción string, dnidir string);
+
+insert into programadores(dni, nombre, dirección, teléfono) values('1','Jacinto','Jazmín 4','91-8888888');
+insert into programadores(dni, nombre, dirección, teléfono) values('2','Herminia','Rosa 4','91-7777777');
+insert into programadores(dni, nombre, dirección, teléfono) values('3','Calixto','Clavel 3','91-1231231');
+insert into programadores(dni, nombre, dirección, teléfono) values('4','Teodora','Petunia 3','91-6666666');
+
+insert into analistas(dni, nombre, dirección, teléfono) values('4','Teodora','Petunia 3','91-6666666');
+insert into analistas(dni, nombre, dirección, teléfono) values('5','Evaristo','Luna 1','91-1111111');
+insert into analistas(dni, nombre, dirección, teléfono) values('6','Luciana','Júpiter 2','91-8888888');
+insert into analistas(dni, nombre, dirección, teléfono) values('7','Nicodemo','Plutón 3',NULL);
+
+-- Para crear una clave primaria de más de un atributo hay que añadir al final como si fuese otro campo lo siguiente: primary key (códigopr, dniemp)
+insert into distribución(códigopr, dniemp, horas) values('P1','1',10);
+insert into distribución(códigopr, dniemp, horas) values('P1','2',40);
+insert into distribución(códigopr, dniemp, horas) values('P1','4',5);
+insert into distribución(códigopr, dniemp, horas) values('P2','4',10);
+insert into distribución(códigopr, dniemp, horas) values('P3','1',10);
+insert into distribución(códigopr, dniemp, horas) values('P3','3',40);
+insert into distribución(códigopr, dniemp, horas) values('P3','4',5);
+insert into distribución(códigopr, dniemp, horas) values('P3','5',30);
+insert into distribución(códigopr, dniemp, horas) values('P4','4',20);
+insert into distribución(códigopr, dniemp, horas) values('P4','5',10);
+
+
+insert into proyectos(código, descripción, dnidir) values('P1','Nómina','4');
+insert into proyectos(código, descripción, dnidir) values('P2','Contabilidad','4');
+insert into proyectos(código, descripción, dnidir) values('P3','Producción','5');
+insert into proyectos(código, descripción, dnidir) values('P4','Clientes','5');
+insert into proyectos(código, descripción, dnidir) values('P5','Ventas','6');
+
+
+---
+empleados := programadores union analistas
+
+-- Ejercicio 1
+vista1 := project dni (programadores njoin analistas)
+
+
+--Ejercicio 2
+--Falta lo del 0
+sumaHoras := group_by dniemp dniemp, sum(horas) true (distribución) 
+empConHoras := rename empConHoras (dni, horas) (sumaHoras)
+emplSinhoras(dni, horas) := project dni, 0 (empleados) difference project dni, 0 (empConHoras)
+vista2 := empConHoras union emplSinhoras
+
+
+
+--Ejercicio 3
+auxxx :=  project dni, nombre, códigopr(empleados zjoin dni = dniemp (distribución))
+vista3 :=  project dni, nombre, códigopr (empleados nljoin auxxx)
+
+
+--Ejercicio 4
+vista4 := project dni, nombre (select teléfono is null (empleados))
+
+
+--Ejercicio 5
+hProDivEmp := group_by códigopr códigopr, avg(horas) true (distribución)
+mediaTotal := group_by [] avg($a4) true (hProDivEmp)
+horasEmpleados := group_by dniemp dniemp, avg(horas) true (distribución) 
+aux := horasEmpleados product mediaTotal
+resultado := rename resultado (dniemp, res, media) (aux)
+
+vista5 := project dniemp, res (select res < media (resultado))
+
+
+--Ejercicio 6
+dniEva := project dni (select nombre ='Evaristo' (empleados))
+proyEva := project códigopr (distribución zjoin dniemp = dni dniEva)
+noProyEva := project códigopr (distribución) difference proyEva
+vista6 := project dniemp, códigopr, horas*1.2 (noProyEva njoin distribución)
+
+
+--Ejercicio 7
+aux2 := project códigopr, dniemp (distribución)
+vista7 := (aux2 division proyEva) difference dniEva
+
+
+--Ejercicio 8
+numProy := group_by [] count(códigopr) true (proyEva)
+compEva := distribución njoin proyEva
+numProComEva := group_by dniemp dniemp, count(códigopr) true (compEva)
+aux3 := rename aux3 (dniemp, vecesComp) (numProComEva)
+vista8 := project dniemp (select vecesComp = $a1 (aux3 product numProy)) difference dniEva
+
+
+
+--Ejercicio 9
+dniJefe := rename dniJefe (dniemp) (dniEva)
+proyDirJefe := project código (dniJefe zjoin dniemp = dnidir proyectos)
+emplDepJefe := project dniemp(proyDirJefe zjoin código = códigopr distribución)
+
+
+recursion(depen) := emplDepJefe union project dniemp (project código(recursion zjoin depen = dnidir proyectos) zjoin código = códigopr distribución)
+
+vista9:= recursion difference dniEva
+
+
+
+
+select true (vista1);
+select true (vista2);
+select true (vista3);
+select true (vista4);
+select true (vista5);
+select true (vista6);
+select true (vista7);
+select true (vista8);
+select true (vista9);
